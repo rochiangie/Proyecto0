@@ -3,11 +3,6 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import os
 
-class Persona:
-    def __init__(self, pelo, ojos, boca):
-        self.pelo = pelo
-        self.ojos = ojos
-        self.boca = boca
 
 # Funciones para proporcionar recomendaciones
 def obtener_recomendacion(temperatura, crecimiento, floracion, sustrato):
