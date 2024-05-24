@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
+import os
 
 # Función para cargar la imagen como fondo
 def cargar_fondo(ruta_imagen):
@@ -19,6 +20,7 @@ def seleccionar_imagen():
     ruta_imagen = r"C:\Users\rocio\Documents\GitHub\Proyecto0\Proyecto0\venv\weed.jpg"
     if ruta_imagen:
         cargar_fondo(ruta_imagen)
+
 
 # Configuración de la ventana principal
 ventana = tk.Tk()
