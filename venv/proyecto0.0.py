@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 def cargar_fondo(ruta_imagen):
     try:
         imagen = Image.open(ruta_imagen)
-        imagen = imagen.resize((ventana.winfo_width(), ventana.winfo_height()), Image.ANTIALIAS)
+        imagen = imagen.resize((ventana.winfo_width(), ventana.winfo_height()))
         imagen_fondo = ImageTk.PhotoImage(imagen)
 
         label_fondo.config(image=imagen_fondo)
