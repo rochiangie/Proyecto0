@@ -20,7 +20,7 @@ def cargar_fondo(ruta_imagen):
 def seleccionar_imagen():
     """Selecciona una imagen y la carga como fondo de la ventana."""
     # Ruta relativa a la imagen
-    ruta_imagen = os.path.join("proyecto0", "weed.jpg")
+    ruta_imagen = os.path.join("venv", "weed.jpg")
     if os.path.exists(ruta_imagen):
         cargar_fondo(ruta_imagen)
     else:
