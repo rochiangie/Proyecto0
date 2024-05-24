@@ -3,6 +3,49 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import os
 
+# Funciones para proporcionar recomendaciones
+def obtener_recomendacion(temperatura, crecimiento, floracion, sustrato):
+    # Aquí puedes agregar la lógica para generar recomendaciones basadas en los inputs
+    recomendaciones = []
+    
+    # Ejemplo de recomendaciones simples
+    if temperatura < 18:
+        recomendaciones.append("La temperatura es muy baja. Considera calentar el ambiente.")
+    elif temperatura > 30:
+        recomendaciones.append("La temperatura es muy alta. Considera enfriar el ambiente.")
+    else:
+        recomendaciones.append("La temperatura es adecuada.")
+
+    if crecimiento == "lento":
+        recomendaciones.append("El crecimiento es lento. Revisa los nutrientes y la luz.")
+    elif crecimiento == "rápido":
+        recomendaciones.append("El crecimiento es bueno. Continúa con los cuidados actuales.")
+
+    if floracion == "iniciando":
+        recomendaciones.append("La floración está iniciando. Ajusta el fotoperiodo a 12 horas de luz y 12 horas de oscuridad.")
+    elif floracion == "avanzada":
+        recomendaciones.append("La floración está avanzada. Mantén los cuidados actuales y prepara para la cosecha.")
+
+    if sustrato == "seco":
+        recomendaciones.append("El sustrato está seco. Necesita más riego.")
+    elif sustrato == "húmedo":
+        recomendaciones.append("El sustrato está húmedo. Riega con menos frecuencia.")
+
+    return "\n".join(recomendaciones)
+
+# Función que se ejecuta al hacer clic en el botón
+def obtener_ayuda():
+    try:
+        temperatura = float(entry_temperatura.get())
+        crecimiento = entry_crecimiento.get().lower()
+        floracion = entry_floracion.get().lower()
+        sustrato = entry_sustrato.get().lower()
+
+        recomendacion = obtener_recomendacion(temperatura, crecimiento, floracion, sustrato)
+        messagebox.showinfo("Recomendaciones", recomendacion)
+    except ValueError:
+        messagebox.showerror("Error", "Por favor, ingresa valores válidos.")
+
 def cargar_fondo(ruta_imagen):
     """Carga una imagen y la establece como fondo de la ventana."""
     try:
