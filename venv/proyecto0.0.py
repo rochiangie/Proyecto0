@@ -1,108 +1,81 @@
-import tkinter as tk
-from tkinter import messagebox
-from PIL import Image, ImageTk
-import os
+from datetime import date
 
-# Funciones para proporcionar recomendaciones
-def obtener_recomendacion(temperatura, crecimiento, floracion, sustrato):
-    # Aquí puedes agregar la lógica para generar recomendaciones basadas en los inputs
-    recomendaciones = []
+class RegistroDiario:
+    def __init__(self, fecha, temperatura, humedad, caracteristicas):
+        self.fecha = fecha
+        self.temperatura = temperatura
+        self.humedad = humedad
+        self.caracteristicas = caracteristicas
+
+class Planta:
+    def __init__(self, nombre, caracteristicas, fecha_plantado):
+        self.nombre = nombre
+        self.caracteristicas = caracteristicas
+        self.fecha_plantado = fecha_plantado
+        self.historial = []
+
+    def agregar_registro(self, registro):
+        self.historial.append(registro)
     
-    # Ejemplo de recomendaciones simples
-    if temperatura < 18:
-        recomendaciones.append("La temperatura es muy baja. Considera calentar el ambiente.")
-    elif temperatura > 30:
-        recomendaciones.append("La temperatura es muy alta. Considera enfriar el ambiente.")
-    else:
-        recomendaciones.append("La temperatura es adecuada.")
+    def mostrar_informacion(self):
+        print(f"Nombre: {self.nombre}")
+        print(f"Características: {self.caracteristicas}")
+        print(f"Fecha de Plantado: {self.fecha_plantado}")
+        print("Historial de Seguimiento:")
+        for registro in self.historial:
+            print(f"  Fecha: {registro.fecha}")
+            print(f"  Temperatura: {registro.temperatura}")
+            print(f"  Humedad: {registro.humedad}")
+            print(f"  Características: {registro.caracteristicas}")
+            print("-" * 20)
 
-    if crecimiento == "lento":
-        recomendaciones.append("El crecimiento es lento. Revisa los nutrientes y la luz.")
-    elif crecimiento == "rápido":
-        recomendaciones.append("El crecimiento es bueno. Continúa con los cuidados actuales.")
+# Ejemplo de uso
+# Crear una planta
+planta = Planta("Rosa", "Roja, Espinosa", date(2024, 5, 1))
 
-    if floracion == "iniciando":
-        recomendaciones.append("La floración está iniciando. Ajusta el fotoperiodo a 12 horas de luz y 12 horas de oscuridad.")
-    elif floracion == "avanzada":
-        recomendaciones.append("La floración está avanzada. Mantén los cuidados actuales y prepara para la cosecha.")
+# Agregar registros diarios
+registro1 = RegistroDiario(date(2024, 5, 10), 25, 60, "Follaje verde y saludable")
+registro2 = RegistroDiario(date(2024, 5, 15), 26, 58, "Floración comenzando")
 
-    if sustrato == "seco":
-        recomendaciones.append("El sustrato está seco. Necesita más riego.")
-    elif sustrato == "húmedo":
-        recomendaciones.append("El sustrato está húmedo. Riega con menos frecuencia.")
+planta.agregar_registro(registro1)
+planta.agregar_registro(registro2)
 
-    return "\n".join(recomendaciones)
+# Mostrar información de la planta
+planta.mostrar_informacion()
 
-# Función que se ejecuta al hacer clic en el botón
-def obtener_ayuda():
-    try:
-        temperatura = float(entry_temperatura.get())
-        crecimiento = entry_crecimiento.get().lower()
-        floracion = entry_floracion.get().lower()
-        sustrato = entry_sustrato.get().lower()
+class GestorPlantas:
+    def __init__(self):
+        self.plantas = []
 
-        recomendacion = obtener_recomendacion(temperatura, crecimiento, floracion, sustrato)
-        messagebox.showinfo("Recomendaciones", recomendacion)
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingresa valores válidos.")
+    def agregar_planta(self, planta):
+        self.plantas.append(planta)
 
-def cargar_fondo(ruta_imagen):
-    """Carga una imagen y la establece como fondo de la ventana."""
-    try:
-        imagen = Image.open(ruta_imagen)
-        imagen = imagen.resize((ventana.winfo_width(), ventana.winfo_height()))
-        imagen_fondo = ImageTk.PhotoImage(imagen)
+    def mostrar_plantas(self):
+        for planta in self.plantas:
+            planta.mostrar_informacion()
+            print("=" * 30)
 
-        label_fondo.config(image=imagen_fondo)
-        label_fondo.image = imagen_fondo  # Evitar recolección de basura
-    except FileNotFoundError:
-        messagebox.showerror("Error", "La imagen no se encontró en la ruta especificada.")
-    except Exception as e:
-        messagebox.showerror("Error", f"No se pudo cargar la imagen: {e}")
+# Ejemplo de uso
+# Crear el gestor de plantas
+gestor = GestorPlantas()
 
-def seleccionar_imagen():
-    """Selecciona una imagen y la carga como fondo de la ventana."""
-    # Ruta relativa a la imagen
-    ruta_imagen = os.path.join("venv", "weed.jpg")
-    if os.path.exists(ruta_imagen):
-        cargar_fondo(ruta_imagen)
-    else:
-        messagebox.showerror("Error", "La imagen no se encontró en la ruta especificada.")
+# Crear y agregar plantas al gestor
+planta1 = Planta("Rosa", "Roja, Espinosa", date(2024, 5, 1))
+planta2 = Planta("Tulipán", "Amarillo, Delicado", date(2024, 5, 2))
 
-def configurar_interfaz():
-    """Configura la interfaz de usuario."""
-    label_fondo.place(relwidth=1, relheight=1)
+gestor.agregar_planta(planta1)
+gestor.agregar_planta(planta2)
 
-    tk.Label(ventana, text="Temperatura (°C):").grid(row=0, column=0, padx=10, pady=5)
-    entry_temperatura = tk.Entry(ventana)
-    entry_temperatura.grid(row=0, column=1, padx=10, pady=5)
+# Agregar registros a las plantas
+registro1_planta1 = RegistroDiario(date(2024, 5, 10), 25, 60, "Follaje verde y saludable")
+registro2_planta1 = RegistroDiario(date(2024, 5, 15), 26, 58, "Floración comenzando")
+planta1.agregar_registro(registro1_planta1)
+planta1.agregar_registro(registro2_planta1)
 
-    tk.Label(ventana, text="Crecimiento (rápido/lento):").grid(row=1, column=0, padx=10, pady=5)
-    entry_crecimiento = tk.Entry(ventana)
-    entry_crecimiento.grid(row=1, column=1, padx=10, pady=5)
+registro1_planta2 = RegistroDiario(date(2024, 5, 10), 20, 65, "Crecimiento saludable")
+registro2_planta2 = RegistroDiario(date(2024, 5, 15), 21, 63, "Primeros brotes")
+planta2.agregar_registro(registro1_planta2)
+planta2.agregar_registro(registro2_planta2)
 
-    tk.Label(ventana, text="Floración (iniciando/avanzada):").grid(row=2, column=0, padx=10, pady=5)
-    entry_floracion = tk.Entry(ventana)
-    entry_floracion.grid(row=2, column=1, padx=10, pady=5)
-
-    tk.Label(ventana, text="Sustrato (seco/húmedo):").grid(row=3, column=0, padx=10, pady=5)
-    entry_sustrato = tk.Entry(ventana)
-    entry_sustrato.grid(row=3, column=1, padx=10, pady=5)
-
-    boton_obtener_ayuda = tk.Button(ventana, text="Obtener Ayuda", command=mostrar_recomendaciones)
-    boton_obtener_ayuda.grid(row=4, column=0, columnspan=2, pady=10)
-
-def mostrar_recomendaciones():
-    """Muestra las recomendaciones al usuario."""
-    messagebox.showinfo("Recomendaciones", "Aquí van las recomendaciones.")
-
-ventana = tk.Tk()
-ventana.title("Asistente de Cultivo de Marihuana")
-
-label_fondo = tk.Label(ventana)
-
-configurar_interfaz()
-ventana.after(100, seleccionar_imagen)
-
-ventana.geometry("800x600")
-ventana.mainloop()
+# Mostrar información de todas las plantas
+gestor.mostrar_plantas()
