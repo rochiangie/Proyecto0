@@ -3,16 +3,18 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 import os
 
+# Constantes
+TEMP_MIN = 18
+TEMP_MAX = 30
+RUTA_IMAGEN_DEFECTO = os.path.join("venv", "weed.jpg")
 
 # Funciones para proporcionar recomendaciones
 def obtener_recomendacion(temperatura, crecimiento, floracion, sustrato):
-    # Aquí puedes agregar la lógica para generar recomendaciones basadas en los inputs
     recomendaciones = []
-    
-    # Ejemplo de recomendaciones simples
-    if temperatura < 18:
+
+    if temperatura < TEMP_MIN:
         recomendaciones.append("La temperatura es muy baja. Considera calentar el ambiente.")
-    elif temperatura > 30:
+    elif temperatura > TEMP_MAX:
         recomendaciones.append("La temperatura es muy alta. Considera enfriar el ambiente.")
     else:
         recomendaciones.append("La temperatura es adecuada.")
@@ -34,76 +36,68 @@ def obtener_recomendacion(temperatura, crecimiento, floracion, sustrato):
 
     return "\n".join(recomendaciones)
 
-# Función que se ejecuta al hacer clic en el botón
-def obtener_ayuda():
-    try:
-        temperatura = float(entry_temperatura.get())
-        crecimiento = entry_crecimiento.get().lower()
-        floracion = entry_floracion.get().lower()
-        sustrato = entry_sustrato.get().lower()
+class CultivoApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Asistente de Cultivo de Marihuana")
+        self.root.geometry("800x600")
 
-        recomendacion = obtener_recomendacion(temperatura, crecimiento, floracion, sustrato)
-        messagebox.showinfo("Recomendaciones", recomendacion)
-    except ValueError:
-        messagebox.showerror("Error", "Por favor, ingresa valores válidos.")
+        self.label_fondo = tk.Label(root)
+        self.label_fondo.place(relwidth=1, relheight=1)
 
-def cargar_fondo(ruta_imagen):
-    """Carga una imagen y la establece como fondo de la ventana."""
-    try:
-        imagen = Image.open(ruta_imagen)
-        imagen = imagen.resize((ventana.winfo_width(), ventana.winfo_height()))
-        imagen_fondo = ImageTk.PhotoImage(imagen)
+        self.configurar_interfaz()
+        self.root.bind('<Configure>', self.redimensionar_fondo)
+        self.cargar_fondo(RUTA_IMAGEN_DEFECTO)
+        
+    def configurar_interfaz(self):
+        tk.Label(self.root, text="Temperatura (°C):").grid(row=0, column=0, padx=10, pady=5)
+        self.entry_temperatura = tk.Entry(self.root)
+        self.entry_temperatura.grid(row=0, column=1, padx=10, pady=5)
 
-        label_fondo.config(image=imagen_fondo)
-        label_fondo.image = imagen_fondo  # Evitar recolección de basura
-    except FileNotFoundError:
-        messagebox.showerror("Error", "La imagen no se encontró en la ruta especificada.")
-    except Exception as e:
-        messagebox.showerror("Error", f"No se pudo cargar la imagen: {e}")
+        tk.Label(self.root, text="Crecimiento (rápido/lento):").grid(row=1, column=0, padx=10, pady=5)
+        self.entry_crecimiento = tk.Entry(self.root)
+        self.entry_crecimiento.grid(row=1, column=1, padx=10, pady=5)
 
-def seleccionar_imagen():
-    """Selecciona una imagen y la carga como fondo de la ventana."""
-    # Ruta relativa a la imagen
-    ruta_imagen = os.path.join("venv", "weed.jpg")
-    if os.path.exists(ruta_imagen):
-        cargar_fondo(ruta_imagen)
-    else:
-        messagebox.showerror("Error", "La imagen no se encontró en la ruta especificada.")
+        tk.Label(self.root, text="Floración (iniciando/avanzada):").grid(row=2, column=0, padx=10, pady=5)
+        self.entry_floracion = tk.Entry(self.root)
+        self.entry_floracion.grid(row=2, column=1, padx=10, pady=5)
 
-def configurar_interfaz():
-    """Configura la interfaz de usuario."""
-    label_fondo.place(relwidth=1, relheight=1)
+        tk.Label(self.root, text="Sustrato (seco/húmedo):").grid(row=3, column=0, padx=10, pady=5)
+        self.entry_sustrato = tk.Entry(self.root)
+        self.entry_sustrato.grid(row=3, column=1, padx=10, pady=5)
 
-    tk.Label(ventana, text="Temperatura (°C):").grid(row=0, column=0, padx=10, pady=5)
-    global entry_temperatura
-    entry_temperatura = tk.Entry(ventana)
-    entry_temperatura.grid(row=0, column=1, padx=10, pady=5)
+        boton_obtener_ayuda = tk.Button(self.root, text="Obtener Ayuda", command=self.obtener_ayuda)
+        boton_obtener_ayuda.grid(row=4, column=0, columnspan=2, pady=10)
 
-    tk.Label(ventana, text="Crecimiento (rápido/lento):").grid(row=1, column=0, padx=10, pady=5)
-    global entry_crecimiento
-    entry_crecimiento = tk.Entry(ventana)
-    entry_crecimiento.grid(row=1, column=1, padx=10, pady=5)
+    def obtener_ayuda(self):
+        try:
+            temperatura = float(self.entry_temperatura.get())
+            crecimiento = self.entry_crecimiento.get().lower()
+            floracion = self.entry_floracion.get().lower()
+            sustrato = self.entry_sustrato.get().lower()
 
-    tk.Label(ventana, text="Floración (iniciando/avanzada):").grid(row=2, column=0, padx=10, pady=5)
-    global entry_floracion
-    entry_floracion = tk.Entry(ventana)
-    entry_floracion.grid(row=2, column=1, padx=10, pady=5)
+            recomendacion = obtener_recomendacion(temperatura, crecimiento, floracion, sustrato)
+            messagebox.showinfo("Recomendaciones", recomendacion)
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, ingresa valores válidos.")
 
-    tk.Label(ventana, text="Sustrato (seco/húmedo):").grid(row=3, column=0, padx=10, pady=5)
-    global entry_sustrato
-    entry_sustrato = tk.Entry(ventana)
-    entry_sustrato.grid(row=3, column=1, padx=10, pady=5)
+    def cargar_fondo(self, ruta_imagen):
+        try:
+            self.imagen = Image.open(ruta_imagen)
+            self.redimensionar_fondo()
+        except FileNotFoundError:
+            messagebox.showerror("Error", "La imagen no se encontró en la ruta especificada.")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo cargar la imagen: {e}")
 
-    boton_obtener_ayuda = tk.Button(ventana, text="Obtener Ayuda", command=obtener_ayuda)
-    boton_obtener_ayuda.grid(row=4, column=0, columnspan=2, pady=10)
+    def redimensionar_fondo(self, event=None):
+        if hasattr(self, 'imagen'):
+            imagen_redimensionada = self.imagen.resize((self.root.winfo_width(), self.root.winfo_height()))
+            self.imagen_fondo = ImageTk.PhotoImage(imagen_redimensionada)
+            self.label_fondo.config(image=self.imagen_fondo)
+            self.label_fondo.image = self.imagen_fondo  # Evitar recolección de basura
 
-ventana = tk.Tk()
-ventana.title("Asistente de Cultivo de Marihuana")
-
-label_fondo = tk.Label(ventana)
-
-configurar_interfaz()
-ventana.after(100, seleccionar_imagen)
-
-ventana.geometry("800x600")
-ventana.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = CultivoApp(root)
+    root.mainloop()
