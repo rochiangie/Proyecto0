@@ -34,9 +34,9 @@ def obtener_recomendacion(temperatura, crecimiento, floracion, sustrato):
     elif floracion == "avanzada":
         recomendaciones.append("La floración está avanzada. Mantén los cuidados actuales y prepara para la cosecha.")
 
-    if sustrato está seco:
+    if sustrato == "está seco":
         recomendaciones.append("El sustrato está seco. Necesita más riego.")
-    elif sustrato está húmedo:
+    elif sustrato ==  "está húmedo":
         recomendaciones.append("El sustrato está húmedo. Riega con menos frecuencia.")
 
     return "\n".join(recomendaciones)
