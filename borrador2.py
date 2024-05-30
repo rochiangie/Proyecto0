@@ -34,9 +34,9 @@ def obtener_recomendacion(temperatura, crecimiento, floracion, sustrato):
     elif floracion == "avanzada":
         recomendaciones.append("La floración está avanzada. Mantén los cuidados actuales y prepara para la cosecha.")
 
-    if sustrato == "está seco":
+    if sustrato == "seco":
         recomendaciones.append("El sustrato está seco. Necesita más riego.")
-    elif sustrato ==  "está húmedo":
+    elif sustrato ==  "húmedo":
         recomendaciones.append("El sustrato está húmedo. Riega con menos frecuencia.")
 
     return "\n".join(recomendaciones)
@@ -169,15 +169,37 @@ class CultivoApp:
 
         fechas = [dato["fecha"] for dato in self.datos]
         temperaturas = [dato["temperatura"] for dato in self.datos]
+        crecimiento = [dato["crecimiento"] for dato in self.datos]
+        floracion = [dato["floracion"] for dato in self.datos]
+        sustrato = [dato["sustrato"] for dato in self.datos]
 
-        fig, ax = plt.subplots()
-        ax.plot(fechas, temperaturas, marker='o')
-        ax.set(xlabel='Fecha', ylabel='Temperatura (°C)', title='Temperatura a lo largo del tiempo')
-        ax.grid()
+        fig, axs = plt.subplots(4, 1, figsize=(10, 12))
+
+        # Gráfico de Temperatura
+        axs[0].plot(fechas, temperaturas, marker='o')
+        axs[0].set(xlabel='Fecha', ylabel='Temperatura (°C)', title='Temperatura a lo largo del tiempo')
+        axs[0].grid()
+
+        # Gráfico de Crecimiento
+        axs[1].plot(fechas, crecimiento, marker='o', linestyle='-', color='orange')
+        axs[1].set(xlabel='Fecha', ylabel='Crecimiento', title='Crecimiento a lo largo del tiempo')
+        axs[1].grid()
+
+        # Gráfico de Floración
+        axs[2].plot(fechas, floracion, marker='o', linestyle='-', color='green')
+        axs[2].set(xlabel='Fecha', ylabel='Floración', title='Floración a lo largo del tiempo')
+        axs[2].grid()
+
+        # Gráfico de Sustrato
+        axs[3].plot(fechas, sustrato, marker='o', linestyle='-', color='red')
+        axs[3].set(xlabel='Fecha', ylabel='Sustrato', title='Sustrato a lo largo del tiempo')
+        axs[3].grid()
+
+        plt.tight_layout()
 
         canvas = FigureCanvasTkAgg(fig, master=self.root)
         canvas.draw()
-        canvas.get_tk_widget().grid(row=8, column=0, columnspan=2, pady=10)
+        canvas.get_tk_widget().grid(row=8, column=0, columnspan=3, pady=10)
 
 if __name__ == "__main__":
     root = tk.Tk()
